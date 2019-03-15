@@ -1,37 +1,31 @@
-import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:discover/pages/home_controller.dart';
+// import 'dart:io';
+
 import 'package:discover/providers/client_provider.dart';
-import 'package:discover/providers/rekognizer_provider.dart';
-import 'package:flutter/material.dart';
-import 'package:googleapis/vision/v1.dart' hide Image, ImageSource;
+import 'package:googleapis/vision/v1.dart';
+import 'package:googleapis_auth/auth_io.dart';
 
-class Home extends StatefulWidget {
-  @override
-  _HomeState createState() => _HomeState();
-}
+class RekognizerProvider {
+  ClientProvider _clientProvider = ClientProvider();
+  // static VisionApi _vision = VisionApi(_clientProvider.client);
+  // ImagesResourceApi api = _vision.images;
 
-// void test() {
-//   final _scopes = [VisionApi.CloudVisionScope];
+  Future get response async {
+    var client = await _clientProvider.client;
+    print(client);
+    return ;
+    // BatchAnnotateImagesResponse response =
+    //     await api.annotate(BatchAnnotateImagesRequest.fromJson(request));
 
-//   clientViaServiceAccount(_credentials, _scopes).then((client) {
-//     detectWeb(client,
-//         'http://www.forroemvinil.com/wp-content/uploads/2014/04/capa6.jpg');
-//   });
-// }
+    // print(_clientProvider);
 
-// class DetectWeb {
-//   String filename;
-//   AutoRefreshingAuthClient client;
+    // response.responses.forEach((data) {
+    //   WebDetection webDetection = data.webDetection;
+    //   print(webDetection.bestGuessLabels.single.label);
+    //   return webDetection.bestGuessLabels.single.label;
+    // });
+  }
 
-//   DetectWeb(this.client, this.filename);
-// }
-
-void detectWeb(client, filename) async {
-  var vision = new VisionApi(client);
-
-  ImagesResourceApi imagesResourceApi = vision.images;
-
-  Map request = {
+  final Map request = {
     "requests": [
       {
         "image": {
@@ -44,49 +38,4 @@ void detectWeb(client, filename) async {
       }
     ]
   };
-
-  final BatchAnnotateImagesResponse response = await imagesResourceApi
-      .annotate(BatchAnnotateImagesRequest.fromJson(request));
-
-  response.responses.forEach((data) {
-    WebDetection webDetection = data.webDetection;
-    print(webDetection.bestGuessLabels.single.label);
-    return webDetection.bestGuessLabels.single.label;
-  });
-
-  // print(response.responses.single.);
-}
-
-class _HomeState extends State<Home> {
-  ClientProvider clientProvider = ClientProvider();
-  RekognizerProvider rekognizerProvider = RekognizerProvider();
-
-  @override
-  Widget build(BuildContext context) {
-    final HomeController _homeController =
-        BlocProvider.of<HomeController>(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Discover'),
-      ),
-      body: Center(
-        child: StreamBuilder(
-          stream: _homeController.outImage,
-          initialData: null,
-          builder: (BuildContext context, AsyncSnapshot snapshot) {
-            return snapshot.hasData
-                ? Image.file(snapshot.data)
-                : Text('No image selected.');
-          },
-        ),
-        // child: _image == null ? Text('No image selected.') : Image.file(_image),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print(rekognizerProvider.response);
-        },
-        child: Icon(Icons.camera_alt),
-      ),
-    );
-  }
 }
