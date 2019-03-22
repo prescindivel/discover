@@ -1,6 +1,6 @@
 import 'package:bloc_pattern/bloc_pattern.dart';
-import 'package:discover/pages/home/home_controller.dart';
-import 'package:discover/pages/home/home.dart';
+import 'package:discover/blocs/image_bloc.dart';
+import 'package:discover/screens/home.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(App());
@@ -11,7 +11,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       home: BlocProvider(
         child: Home(),
-        bloc: HomeController(),
+        bloc: ImageBloc(),
       ),
     );
   }
